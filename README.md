@@ -91,8 +91,11 @@ Run on the NASA Harvest cluster, with ERA5 already downloaded by
 0.25°. It needs roughly 32 GB of RAM at peak and starts one loader process per core, so run it inside a
 job allocation, not on a login node.
 
-1. Set the paths:
+1. Set the paths, and unset `PROJ_LIB` / `PROJ_DATA` so rasterio and pyproj use the PROJ data bundled
+   with their wheels. An Anaconda module sets these to its own older copy, which fails with
+   `proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 3 whereas a number >= 6 is expected`.
    ```
+   unset PROJ_LIB PROJ_DATA
    CATALOG=/gpfs/data1/cmongp1/sasirajann/download_era5/data/era5/catalog.csv
    REGION=/gpfs/data1/cmongp2/sasirajann/nh_crop_calendar/crop_calendar/data/shapefiles/AfSP012Qry_ISRIC/GIS_Shape/AfSP012Qry_SubSaharanAfrica.shp
    PUBLISHED=/gpfs/data1/cmongp2/sasirajann/nh_crop_calendar/crop_calendar/data/era5_csu/sub-saharan-africa/maize_pollination
