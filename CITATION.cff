@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Maize Planting Opportunity Units (MPOU)"
+abstract: >-
+  Maize Planting Opportunity Units (MPOU): zones land by how often daily weather let maize planted on a
+  given day reach maturity, and by the typical season length. Works with any daily temperature and
+  precipitation data.
+authors:
+  - family-names: "Sasi Rajan"
+    given-names: "Nikhil"
+    orcid: "https://orcid.org/0009-0005-9572-4283"
+    affiliation: "Université de Strasbourg; NASA Harvest"
+  - family-names: "Sreedharan Nair"
+    given-names: "Shabarinath"
+    orcid: "https://orcid.org/0009-0006-1986-9592"
+    affiliation: "Université de Strasbourg; NASA Harvest"
+  - family-names: "Snapp"
+    given-names: "Sieglinde"
+    orcid: "https://orcid.org/0000-0002-9738-0649"
+    affiliation: "International Maize and Wheat Improvement Center (CIMMYT)"
+  - family-names: "Schulthess"
+    given-names: "Urs"
+    orcid: "https://orcid.org/0000-0002-9642-9762"
+    affiliation: "International Maize and Wheat Improvement Center (CIMMYT)"
+  - family-names: "Becker-Reshef"
+    given-names: "Inbal"
+    orcid: "https://orcid.org/0000-0002-2160-5151"
+    affiliation: "University of Maryland; NASA Harvest"
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/nikhilsrajan/maize-planting-opportunity-units"
+keywords:
+  - maize
+  - planting window
+  - agroclimatic zoning
+  - growing degree days
+  - ERA5
+  - Sub-Saharan Africa
