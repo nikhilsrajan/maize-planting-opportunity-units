@@ -28,6 +28,8 @@ authors:
     orcid: "https://orcid.org/0000-0002-2160-5151"
     affiliation: "University of Maryland; NASA Harvest"
 version: 1.0.0
+doi: 10.5281/zenodo.22710597
+date-released: 2026-09-11
 license: MIT
 repository-code: "https://github.com/nikhilsrajan/maize-planting-opportunity-units"
 keywords:
