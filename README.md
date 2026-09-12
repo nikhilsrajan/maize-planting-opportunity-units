@@ -185,7 +185,10 @@ The published maps use ERA5 from the Copernicus Climate Data Store dataset
 ## How to cite
 
 Sasi Rajan, N., Sreedharan Nair, S., Snapp, S., Schulthess, U., & Becker-Reshef, I. (2026). *Maize
-Planting Opportunity Units (MPOU)* (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.22710597
+Planting Opportunity Units (MPOU)* (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.22710598
+
+That DOI is v1.0.0. To cite every version at once, use the concept DOI
+https://doi.org/10.5281/zenodo.22710597, which always resolves to the latest release.
 
 ```bibtex
 @software{sasirajan_2026_mpou,
@@ -195,8 +198,8 @@ Planting Opportunity Units (MPOU)* (v1.0.0). Zenodo. https://doi.org/10.5281/zen
   version   = {1.0.0},
   year      = {2026},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.22710597},
-  url       = {https://doi.org/10.5281/zenodo.22710597}
+  doi       = {10.5281/zenodo.22710598},
+  url       = {https://doi.org/10.5281/zenodo.22710598}
 }
 ```
 
