@@ -1,3 +1,6 @@
 .venv/
 __pycache__/
+.DS_Store
 *.tif
+!maps/**/*.tif
+!report/data/*.tif

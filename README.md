@@ -2,7 +2,7 @@
 
 MPOU zones land by how often daily weather let maize planted on a given day reach maturity, and by the
 typical season length. It works with any daily temperature and precipitation data. The published maps
-cover Sub-Saharan Africa with ERA5 from 1994 to 2024.
+in `maps/era5_sub_saharan_africa/` cover Sub-Saharan Africa with ERA5 from 1994 to 2024.
 
 ## What MPOU measures
 
@@ -98,7 +98,6 @@ job allocation, not on a login node.
    unset PROJ_LIB PROJ_DATA
    CATALOG=/gpfs/data1/cmongp1/sasirajann/download_era5/data/era5/catalog.csv
    REGION=/gpfs/data1/cmongp2/sasirajann/nh_crop_calendar/crop_calendar/data/shapefiles/AfSP012Qry_ISRIC/GIS_Shape/AfSP012Qry_SubSaharanAfrica.shp
-   PUBLISHED=/gpfs/data1/cmongp2/sasirajann/nh_crop_calendar/crop_calendar/data/era5_csu/sub-saharan-africa/maize_pollination
    ```
 2. Install:
    ```
@@ -107,15 +106,13 @@ job allocation, not on a login node.
    python3.11 -m venv .venv
    .venv/bin/pip install -r requirements.txt -r examples/requirements.txt
    ```
-3. Copy the published zones raster `CSU_nbins=8.tif` into `$PUBLISHED`, once. It was made on a laptop
-   and is not on the cluster.
-4. Compute the three rasters, from the repository root:
+3. Compute the three rasters, from the repository root:
    ```
    .venv/bin/python -m examples.era5_sub_saharan_africa "$CATALOG" "$REGION" outputs
    ```
-5. Compare them with the published rasters:
+4. Compare them with the published maps in the repository:
    ```
-   .venv/bin/python examples/compare_with_published.py outputs "$PUBLISHED"
+   .venv/bin/python examples/compare_with_published.py outputs maps/era5_sub_saharan_africa
    ```
    Expected output:
    ```
@@ -169,12 +166,12 @@ code. Fixes are planned for v1.1.0.
 The zones (then called CSU) were evaluated against maize yields from HarvestStat Africa
 ([doi:10.5061/dryad.vq83bk42w](https://doi.org/10.5061/dryad.vq83bk42w)). They were compared with the
 [GYGA climate zones](https://yieldgap-test.containers.wur.nl/web/guest/climate-zones). 8 bins were used
-because they give a number of zones close to GYGA's in the region. The comparison used 187 admin-1 regions
-in DR Congo, Kenya, Malawi, Mozambique, Rwanda, Zambia and Zimbabwe: the countries with 2016–2024 yields
-and an assigned zone. Each region got its majority zone, and 578 region-years of yield were grouped by zone
-and by GYGA climate zone. The two schemes group yields comparably. MPOU does worse than GYGA in low-yield
+because they give a number of zones close to GYGA's in the region. Each admin-1 region got its majority
+zone; 187 regions in the 12 candidate countries received one. Of these, 100 regions in DR Congo, Kenya,
+Malawi, Mozambique, Rwanda, Zambia and Zimbabwe had 2016–2024 maize yields, and their 578 region-years of
+yield were grouped by zone and by GYGA climate zone. The two schemes group yields comparably. MPOU does worse than GYGA in low-yield
 regions and better in medium-yield regions. Unlike GYGA, MPOU is crop-specific and its parameters can be
-tuned.
+tuned. `report/report.md` describes the method, maps and evaluation with figures.
 
 ## Data
 
@@ -205,4 +202,4 @@ Planting Opportunity Units (MPOU)* (v1.0.0). Zenodo. https://doi.org/10.5281/zen
 
 ## License
 
-MIT, see `LICENSE`.
+Code: MIT, see `LICENSE`. Maps in `maps/`: CC BY 4.0, see `maps/era5_sub_saharan_africa/README.md`.
