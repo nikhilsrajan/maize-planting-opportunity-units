@@ -126,8 +126,8 @@ Every output GeoTIFF carries the parameters and dates as tags (`gdalinfo outputs
 ## Renamed from CSU
 
 MPOU was first called Crop Suitability Units (CSU). It was renamed because "suitability" has a specific
-FAO meaning that this method does not follow. Only the names changed: the method, the zone codes and
-every pixel value are the same.
+FAO meaning that this method does not follow. The method and the zone codes are the same, and the two raw
+layers match the CSU maps pixel for pixel.
 
 | CSU (before) | MPOU (now) |
 |---|---|
@@ -140,24 +140,25 @@ every pixel value are the same.
 | sum and mean in `running_sum_prec.py` | `mpou.summarize` |
 | `binify` and the zone code in `csu_validation.ipynb` | `mpou.zones` |
 
+## Changes since v1.0.0
+
+- `mpou.zones` puts values above the top bin edge in the top bin; v1.0.0 put them in bin 1.
+
 ## Known quirks
 
-v1.0.0 reproduces the published rasters pixel for pixel, so it keeps these behaviours of the original
-code. Fixes are planned for v1.1.0.
+The viability tests keep these behaviours of the original code, so the raw layers reproduce the CSU maps
+pixel for pixel. Fixes are planned for v1.1.0.
 
-1. **Out-of-range values land in bin 1.** A value above the top bin edge, or at or below the bottom edge,
-   gets bin 1. In the published map this affects 1,087 pixels with more than 3652 opportunity days and
-   187 pixels with a season longer than 360 days. Never-viable pixels (0 days, NaN season) get zone 101.
-2. **The dry spell is counted forward.** It is the run of dry days starting at the pollination lookup day,
+1. **The dry spell is counted forward.** It is the run of dry days starting at the pollination lookup day,
    not the run ending on it.
-3. **The pollination lookup day is one day late.** It is the day after 842 GDD are exceeded.
-4. **Rain windows exclude the start day.** They cover days *t*+1 … *t*+*d*.
-5. **Season length and viability use different start days.** Season length averages days to maturity
+2. **The pollination lookup day is one day late.** It is the day after 842 GDD are exceeded.
+3. **Rain windows exclude the start day.** They cover days *t*+1 … *t*+*d*.
+4. **Season length and viability use different start days.** Season length averages days to maturity
    counted from the planting day *t*, while viability is judged from *t*+3. When *t* itself never reaches
    maturity, −1 enters the mean.
-6. **Season length spans the whole series.** It includes days after the cutoff (2024 in the published
+5. **Season length spans the whole series.** It includes days after the cutoff (2024 in the published
    run), while opportunity days stop at the cutoff.
-7. **The CSU method note was wrong in two places.** It gives a maximum temperature of 38 °C and a failing
+6. **The CSU method note was wrong in two places.** It gives a maximum temperature of 38 °C and a failing
    dry spell of "more than 5 days". The published run used 45 °C and fails dry runs of 5 days or more.
    The defaults here match the published run.
 
@@ -166,7 +167,7 @@ code. Fixes are planned for v1.1.0.
 The zones (then called CSU) were evaluated against maize yields from HarvestStat Africa
 ([doi:10.5061/dryad.vq83bk42w](https://doi.org/10.5061/dryad.vq83bk42w)). They were compared with the
 [GYGA climate zones](https://yieldgap-test.containers.wur.nl/web/guest/climate-zones). 8 bins were used
-because they give a number of zones close to GYGA's in the region. Each admin-1 region got its majority
+because they give as many zones as GYGA in the region (27). Each admin-1 region got its majority
 zone; 187 regions in the 12 candidate countries received one. Of these, 100 regions in DR Congo, Kenya,
 Malawi, Mozambique, Rwanda, Zambia and Zimbabwe had 2016–2024 maize yields, and their 578 region-years of
 yield were grouped by zone and by GYGA climate zone. The two schemes group yields comparably. MPOU does worse than GYGA in low-yield

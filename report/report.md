@@ -1,6 +1,6 @@
 # Maize Planting Opportunity Units (MPOU): method, maps and evaluation
 
-MPOU v1.0.0 ([doi:10.5281/zenodo.22710597](https://doi.org/10.5281/zenodo.22710597)). Every figure in this
+MPOU ([doi:10.5281/zenodo.22710597](https://doi.org/10.5281/zenodo.22710597)). Every figure in this
 report is drawn by code in this folder; section 7 gives the commands.
 
 ## Summary
@@ -24,7 +24,7 @@ maturity. Extending it to another crop starts with that crop's key failure. For 
 dry spell at pollination (flowering): if no rain falls when the maize tassels, the grain fails.
 
 MPOU was first called Crop Suitability Units (CSU). It was renamed because "suitability" has a specific FAO
-meaning that this method does not follow. The method, zone codes and pixel values are unchanged; the
+meaning that this method does not follow. The method, the two layers and the zone codes are unchanged; the
 top-level README has a table of the renamed layers, files and functions.
 
 ## 2. Data
@@ -137,12 +137,8 @@ Both layers are cut into 8 equal-width bins:
 
 A zone code is `season_bin * 100 + opportunity_bin`, with bins numbered from 1. For example, zone 305 has
 season bin 3 (165–197.5 days) and opportunity bin 5 (1826–2282.5 days). Eight bins were chosen because
-the number of zones they give in the evaluation regions (25) is close to the number of GYGA climate zones
-there (27).
-
-In v1.0.0, a value above the top bin edge lands in bin 1, not bin 8. Inside the outline this affects 909
-pixels with more than 3652 opportunity days and 187 pixels with a season longer than 360 days. Pixels with
-no viable day get zone 101.
+they give 27 zones in the evaluation regions, the same number as the GYGA climate zones there. Values below
+the range fall in bin 1 and values above it in bin 8. Pixels with no viable day get zone 101.
 
 ![MPOU zones](figures/zones.png)
 
@@ -156,7 +152,7 @@ Inside the Sub-Saharan Africa outline (32,488 pixels):
 - 22,919 pixels (71%) had at least one viable planting day before 2024. Among them, the median is 823
   planting opportunity days (5th–95th percentile: 12–3,306), and the maximum is 9,532.
 - Season length has a median of 149 days (5th–95th percentile: 125–259), ranging from 109 to 495 days.
-- All 64 zones occur. Zone 101 covers 12,344 pixels (38%). It holds the pixels with no viable day, as well
+- All 64 zones occur. Zone 101 covers 12,258 pixels (38%). It holds the pixels with no viable day, as well
   as those in the lowest bin of both layers.
 
 The two layers pick out different things (Figure 4). Planting opportunity days are highest along the Guinea
@@ -200,8 +196,8 @@ crops remains open.
 - MPOU uses weather only: no soil, slope or management. At 0.25°, one pixel is about 28 km across.
 - Lake and high-altitude areas show many planting opportunity days, and some pixels have very long seasons
   (more than 200 days to maturity). Both need a closer look.
-- v1.0.0 keeps the numerics of the original code, including the binning overflow (section 3.5) and the
-  other quirks listed in the README. Fixes are planned for v1.1.0.
+- The viability tests keep the numerics of the original code, including the quirks listed in the README.
+  Fixes are planned for v1.1.0.
 - Next steps under consideration:
   - add soil (for example SoilGrids at 250 m), soil organic carbon and slope from a DEM;
   - refine the viability tests;

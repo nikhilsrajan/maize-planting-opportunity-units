@@ -107,6 +107,58 @@ def zones(region, regions):
     save(fig, 'zones.png')
 
 
+def zone_legend(region):
+    """Draw the 8 × 8 zone grid, coloured by opportunity class and hatched for very long seasons, with pixel counts."""
+    with rasterio.open(os.path.join(MAPS, 'zones_nbins=8.tif')) as src:
+        inside = rasterio.features.geometry_mask(region.geometry, src.shape, src.transform, invert=True)
+        codes = src.read(1)[inside]
+    with rasterio.open(os.path.join(MAPS, 'season_length.tif')) as src:
+        never = np.isnan(src.read(1)[inside]).sum()
+    counts = np.zeros((8, 8), dtype=int)
+    np.add.at(counts, (codes // 100 - 1, codes % 100 - 1), 1)
+    classes = [
+        ('#c9c8c3', 'rare or none, effectively unviable: < 15 d/yr', [1]),
+        ('#86b6ef', 'low: 15–46 d/yr', [2, 3]),
+        ('#3987e5', 'moderate: 46–76 d/yr', [4, 5]),
+        ('#184f95', 'high: > 76 d/yr', [6, 7, 8]),
+    ]
+    colour = {b: c for c, _, bins in classes for b in bins}
+    opportunity = ['0–15', '15–30', '30–46', '46–61', '61–76', '76–91', '91–107', '> 107']
+    season = [
+        '≤ 133 d · hot lowland', '133–165 d · warm', '165–198 d · mild', '198–230 d · cool',
+        '230–263 d · cold', '263–295 d · highland', '295–328 d · highland', '> 328 d · highland',
+    ]
+    fig, ax = plt.subplots(figsize=(10, 7.5), constrained_layout=True)
+    for s in range(1, 9):
+        for o in range(1, 9):
+            ax.add_patch(plt.Rectangle(
+                (o - 1, s - 1), 1, 1, facecolor=colour[o], edgecolor='white', linewidth=2,
+                hatch='///' if s >= 6 else None,
+            ))
+            ink = 'white' if o >= 4 else '#1f1f1d'
+            label = f'{s * 100 + o}\n{counts[s - 1, o - 1]:,} px'
+            ax.text(o - 0.5, s - 0.5, label, ha='center', va='center', fontsize=8, color=ink,
+                    bbox=dict(facecolor=colour[o], edgecolor='none', pad=1) if s >= 6 else None)
+    ax.set(xlim=(0, 8), ylim=(0, 8), aspect='equal')
+    ax.set_xticks(np.arange(8) + 0.5, [f'{b}\n{r}' for b, r in zip(range(1, 9), opportunity)])
+    ax.set_yticks(np.arange(8) + 0.5, [f'{b}  {r}' for b, r in zip(range(1, 9), season)])
+    ax.set_xlabel('opportunity bin: viable planting days per year (1994–2023)')
+    ax.set_ylabel('season bin: mean days to maturity')
+    ax.tick_params(length=0)
+    for side in ax.spines.values():
+        side.set_visible(False)
+    handles = [plt.Rectangle((0, 0), 1, 1, facecolor=c, label=l) for c, l, _ in classes]
+    handles.append(plt.Rectangle((0, 0), 1, 1, facecolor='white', edgecolor='#1f1f1d', hatch='///',
+                                 label='season > 263 d: outlasts one rainy season'))
+    ax.legend(handles=handles, loc='upper center', bbox_to_anchor=(0.5, -0.12), ncol=3, frameon=False)
+    ax.set_title(
+        'MPOU zones (zone = season bin × 100 + opportunity bin), pixels inside the outline\n'
+        f'zone 101 also holds the {never:,} pixels with no viable planting day',
+        fontsize=10,
+    )
+    save(fig, 'zone_legend.png')
+
+
 def malawi_pixel():
     """Plot the Malawi pixel's weather, days to maturity and rain to maturity, shading viable planting days."""
     df = pd.read_csv(os.path.join(DATA, 'malawi_pixel.csv'), parse_dates=['date'])
@@ -183,6 +235,7 @@ def main():
     )
     layers(region)
     zones(region, selected)
+    zone_legend(region)
     validation(table)
     climate(region)
     malawi_pixel()

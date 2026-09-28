@@ -103,10 +103,9 @@ def summarize(viable, days_to_maturity, cutoff_index):
 
 
 def _binify(x, edges):
-    """Return bin i where edges[i] < x <= edges[i + 1], else 0."""
-    binned = np.zeros(x.shape, dtype=np.uint8)
-    for i in range(edges.shape[0] - 1):
-        binned[(x > edges[i]) & (x <= edges[i + 1])] = i
+    """Return bin i where edges[i] < x <= edges[i + 1], with values below the range or NaN in bin 0 and above it in the last bin."""
+    binned = np.clip(np.searchsorted(edges, x) - 1, 0, edges.shape[0] - 2).astype(np.uint8)
+    binned[np.isnan(x)] = 0
     return binned
 
 

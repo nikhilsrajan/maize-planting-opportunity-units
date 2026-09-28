@@ -16,21 +16,17 @@ is actually good for. § 6 ranks the fixes.
 
 These are documented in the README's "Known quirks" and are reproduced deliberately in v1.0.0.
 
-1. **Bin overflow lands in bin 1** (`binify`). 909 pixels with more than 3652 opportunity days and 187 with
-   a season longer than 360 days are binned as if they were in the *lowest* class. Low priority, as agreed:
-   the colleague used the raw layers, and the zone raster is a derived product. Fix in v1.1.0.
-2. **Season length can average −1.** Viability is judged from day *t*+3 but season length averages
+1. **Season length can average −1.** Viability is judged from day *t*+3 but season length averages
    `days_to_maturity[t]`, and a −1 (never matured) can enter the mean. This biases season length downward
-   by an unknown amount in pixels near the viability edge — unlike the binning bug, this one silently
-   corrupts a raw layer, so it deserves the higher priority of the two.
-3. **The dry spell is counted forward from the lookup day, and the lookup day is one day late.** The test
+   by an unknown amount in pixels near the viability edge, and it silently corrupts a raw layer.
+2. **The dry spell is counted forward from the lookup day, and the lookup day is one day late.** The test
    asks about the run of dry days *starting* the day after 842 GDD are passed, rather than the dry run
    *ending* at anthesis. A crop is damaged by the drying that precedes and spans flowering, not only by what
    follows it (Denmead & Shaw 1960; Grant et al. 1989 place the sensitive window from about 2–7 to 16–22
    days after silking). The current test is therefore offset from the window the literature identifies.
-4. **Rain windows exclude the start day**, and **season length spans the full series while opportunity days
+3. **Rain windows exclude the start day**, and **season length spans the full series while opportunity days
    stop at the cutoff** — minor, but they make the two layers non-comparable in their time base.
-5. **Zone codes are equal-width, not equal-frequency.** Zone 101 holds 12,344 of 32,488 pixels (38 %),
+4. **Zone codes are equal-width, not equal-frequency.** Zone 101 holds 12,258 of 32,488 pixels (38 %),
    merging "no viable day at all" with "lowest bin of both layers". A third of the map is one class that
    also conflates two meanings.
 
@@ -210,12 +206,12 @@ Framed as "when can maize be planted here, and how reliably", rather than "how m
 
 1. **Add a heat test at anthesis** (§ 2.1). Largest gain per unit of work; the anthesis date is already
    computed; the 45 °C daily-mean ceiling is currently inert.
-2. **Fix season length's −1 contamination** (§ 1.2) — it corrupts a raw layer that is in use.
+2. **Fix season length's −1 contamination** (§ 1.1) — it corrupts a raw layer that is in use.
 3. **Settle 842 vs 2400 and the base temperature** (`references.md` § 4.1, § 4.2). Until then the two GDD
    parameters do not describe one variety.
 4. **Re-validate on the window, per season** (§ 4, tests 1 and 2), and stop reporting the GYGA yield-spread
    comparison as the headline evaluation.
 5. **Sensitivity-test the rainfall thresholds against a gauge-calibrated product** (§ 3.1), then decide
    whether 1 mm / 20 mm / 450 mm survive.
-6. Then the rest: soil water holding capacity (§ 2.3), an excess-water penalty (§ 2.4), the binning
-   overflow and the dry-spell offset (§ 1.1, § 1.3), multiple maturity classes (§ 2.7).
+6. Then the rest: soil water holding capacity (§ 2.3), an excess-water penalty (§ 2.4), the
+   dry-spell offset (§ 1.2), multiple maturity classes (§ 2.7).

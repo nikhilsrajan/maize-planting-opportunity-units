@@ -31,7 +31,7 @@ def weather(n, seed, dtype=np.float32):
 
 
 def assert_matches_legacy(temp, prec, cutoff_index, **params):
-    """Assert every mpou output equals the legacy result on the same cubes, and return mpou's outputs."""
+    """Assert every mpou output equals the legacy result on the same cubes (zones after clipping to the top edges), and return mpou's outputs."""
     viable, days_to_maturity = mpou.viable_planting_days(temp, prec, **params)
     opportunity_days, season_length = mpou.summarize(viable, days_to_maturity, cutoff_index)
     zones = mpou.zones(opportunity_days, season_length, opportunity_max=cutoff_index // 3)
@@ -40,7 +40,10 @@ def assert_matches_legacy(temp, prec, cutoff_index, **params):
         SimpleNamespace(values=temp), SimpleNamespace(values=prec), **{**PUBLISHED, **params},
     )
     legacy_sum, legacy_mean = legacy.summaries(final, legacy_days_to_maturity, cutoff_index)
-    legacy_zones = legacy.csu_zones(legacy_sum, legacy_mean, NUM_BINS=8, N_DAYS_1994_2024_BY_3=cutoff_index // 3)
+    legacy_zones = legacy.csu_zones(
+        np.minimum(legacy_sum, cutoff_index // 3), np.minimum(legacy_mean, 360), NUM_BINS=8,
+        N_DAYS_1994_2024_BY_3=cutoff_index // 3,
+    )
 
     assert viable.dtype == bool
     np.testing.assert_array_equal(viable, final)
@@ -85,10 +88,12 @@ def test_maturity_past_series_end():
     assert viable[:76].all() and not viable[76:].any()
 
 
-def test_bin_overflow():
+def test_bin_edges():
     opportunity_days = np.array([[0, 1, 456, 457, 2000, 3652, 3653, 9000]], dtype=np.uint16)
     season_length = np.array([[np.nan, 100, 100.5, 132.5, 200, 360, 360.5, -1]])
     zones = mpou.zones(opportunity_days, season_length)
-    legacy_zones = legacy.csu_zones(opportunity_days, season_length, NUM_BINS=8, N_DAYS_1994_2024_BY_3=3652)
+    legacy_zones = legacy.csu_zones(
+        np.minimum(opportunity_days, 3652), np.minimum(season_length, 360), NUM_BINS=8, N_DAYS_1994_2024_BY_3=3652,
+    )
     np.testing.assert_array_equal(zones, legacy_zones, strict=True)
-    np.testing.assert_array_equal(zones, [[101, 101, 101, 102, 405, 808, 101, 101]])
+    np.testing.assert_array_equal(zones, [[101, 101, 101, 102, 405, 808, 808, 108]])

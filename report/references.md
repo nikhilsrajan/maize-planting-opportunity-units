@@ -121,7 +121,7 @@ remains is that MPOU tests them against **ERA5 daily mean** temperature, not a d
 value, while the sources are about tissue temperature over hours. A daily mean of 45 °C essentially never
 occurs, so `max_tolerable_temp` is close to inert in the published run; a daily mean at or below 0 °C does
 occur in the highlands, so `min_tolerable_temp` bites. Worth one sentence in the report, and it is also the
-honest answer to the docx's "38 °C" discrepancy (README quirk 7).
+honest answer to the docx's "38 °C" discrepancy (README quirk 6).
 
 Sánchez et al. also make a point MPOU does **not** capture: maize pollination is damaged by heat as well as
 by drought — pollen exposed to 38 °C failed to germinate (Herrero & Johnson 1980) and temperatures over
